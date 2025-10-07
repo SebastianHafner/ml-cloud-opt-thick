@@ -1,0 +1,3 @@
+base_path_data: 'C:/Users/sebastianhaf/datasets/SDL2_SMHI_data/'
+base_path_log: '../log/'
+model_load_path: None # None --> Model randomly initialized. Set to string pointing to model weights to init with those weights.

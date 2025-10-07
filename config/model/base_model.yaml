@@ -1,0 +1,4 @@
+name: 'custom'
+in_channels: 4
+out_channels: 3
+loss_type: 'CrossEntropy'

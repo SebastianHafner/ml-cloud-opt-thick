@@ -1,0 +1,16 @@
+modality: 'planet'
+cities: ['nairobi', 'lagos', 'kano']
+split: 'random'
+split_level: 'cell'
+num_workers: 0
+shuffle: True
+input_size: 1
+random_location: False
+band_indices: [2, 1, 0, 3]
+normalization_value: 3_000
+augmentations:
+  random_flip: True
+  random_rotate: True
+  color_shift: False
+  gamma_correction: True
+  downsampling: 1
