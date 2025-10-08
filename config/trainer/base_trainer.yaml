@@ -1,8 +1,8 @@
-num_train_iter: 2_000_000 # For how many batches to train the model
 lr: 3e-4
 batch_size: 32
-epochs: 100
-patience: 10
+epochs: 250
+patience: 100
 optimizer: 'adam'
 weight_decay: 0
 beta1: 0.9
+max_eval_samples: 10_000

@@ -469,28 +469,3 @@ def eval_swe_forest_cls(base_path, split='train'):
 	print("F1 score (gt is clear (0)): %.4f" % (f1_0))
 	print("F1 score (gt is cloudy (1)): %.4f" % (f1_1))
 
-# Simple 5-layer MLP model
-class MLP5(nn.Module):
-	def __init__(self, input_dim, output_dim=1, hidden_dim=64, apply_relu=True):
-		super(MLP5, self).__init__()
-		self.lin1 = nn.Linear(input_dim, hidden_dim)
-		self.lin2 = nn.Linear(hidden_dim, hidden_dim)
-		self.lin3 = nn.Linear(hidden_dim, hidden_dim)
-		self.lin4 = nn.Linear(hidden_dim, hidden_dim)
-		self.lin5 = nn.Linear(hidden_dim, output_dim)
-		self.relu = nn.ReLU()
-		self.apply_relu = apply_relu
-
-	def forward(self, x):
-		x1 = self.lin1(x)
-		x1 = self.relu(x1)
-		x2 = self.lin2(x1)
-		x2 = self.relu(x2)
-		x3 = self.lin3(x2)
-		x3 = self.relu(x3)
-		x4 = self.lin4(x3)
-		x4 = self.relu(x4)
-		x5 = self.lin5(x4)
-		if self.apply_relu:
-			x5[:, 0] = self.relu(x5[:, 0])  # NB: cloud optical thicknesses cannot be negative
-		return x5
