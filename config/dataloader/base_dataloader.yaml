@@ -4,9 +4,10 @@ skip_band10: False  # True --> Skip band 10 as input (may be needed for Skogssty
 skip_band1:  True  # True --> Skip band 1 (SKIP_BAND_1 should always be True, as the band currently does not make sense in the data; further work needed in that direction in future work)
 inputs: ['spec_bands']  # Add keys from PROPERTY_COLUMN_MAPPING to use those as inputs
 regressor: 'thick'  # Can be set to any other key in PROPERTY_COLUMN_MAPPING to regress that instead
-uniform_dist_no_cloud_thin_cloud_reg_cloud: True  # Ensures that we train evenly in the 'clear', 'thin-cloud' and 'opaque-cloud' regimes
+uniform_dist_no_cloud_thin_cloud_reg_cloud: False  # Ensures that we train evenly in the 'clear', 'thin-cloud' and 'opaque-cloud' regimes
 threshold_thickness_is_cloud: 0.025  # Cloud optical tickness (COT) above this --> seen as an 'opaque cloud' pixel
 threshold_thickness_is_thin_cloud: 0.015  # Cloud optical tickness (COT) above this --> seen as a 'thin cloud' pixel
+normalize_cot: False
 cot_max: 50  # Used for normalization
 num_workers: 0
 shuffle: True

@@ -1,4 +1,4 @@
 name: 'mlp5'
-in_channels: 4
-out_channels: 3
-loss_type: 'CrossEntropy'
+in_channels: 12
+out_channels: 1
+apply_relu: False

@@ -5,9 +5,9 @@ from omegaconf import DictConfig
 from torch import nn
 
 
-def build_model(cfg: DictConfig, input_dim: int, output_dim: int) -> nn.Module:
+def build_model(cfg: DictConfig) -> nn.Module:
     if cfg.model.name == 'mlp5':
-        return MLP5(input_dim, output_dim)
+        return MLP5(cfg.model.in_channels, cfg.model.out_channels, apply_relu=cfg.model.apply_relu)
 
 
 def save_model(network, optimizer, epoch, cfg: DictConfig):
@@ -36,7 +36,7 @@ def load_model(cfg: DictConfig, device: torch.device):
 
 # Simple 5-layer MLP model
 class MLP5(nn.Module):
-    def __init__(self, input_dim, output_dim=1, hidden_dim=64):
+    def __init__(self, input_dim, output_dim=1, hidden_dim=64, apply_relu=True):
         super(MLP5, self).__init__()
         self.lin1 = nn.Linear(input_dim, hidden_dim)
         self.lin2 = nn.Linear(hidden_dim, hidden_dim)
@@ -44,6 +44,7 @@ class MLP5(nn.Module):
         self.lin4 = nn.Linear(hidden_dim, hidden_dim)
         self.lin5 = nn.Linear(hidden_dim, output_dim)
         self.relu = nn.ReLU()
+        self.apply_relu = apply_relu
 
     def forward(self, x):
         x1 = self.lin1(x)
@@ -55,5 +56,6 @@ class MLP5(nn.Module):
         x4 = self.lin4(x3)
         x4 = self.relu(x4)
         x5 = self.lin5(x4)
-        out = torch.sigmoid(x5)
-        return out
+        if self.apply_relu:
+            x5 = self.relu(x5)
+        return x5

@@ -12,7 +12,8 @@ from typing import Tuple
 
 
 class Measurer(object):
-    def __init__(self, max_value: float):
+    def __init__(self, normalized: bool, max_value: float):
+        self.normalized = normalized
         self.max_value = max_value
         self.preds, self.labels = [], []
         self.metrics = {
@@ -21,8 +22,11 @@ class Measurer(object):
         }
 
     def add_sample(self, pred: Tensor, label: Tensor):
-        pred = pred.float().detach().cpu().flatten() * self.max_value
-        label = label.float().detach().cpu().flatten() * self.max_value
+        pred = pred.float().detach().cpu().flatten()
+        label = label.float().detach().cpu().flatten()
+        if self.normalized:
+            pred, label = pred * self.max_value, label * self.max_value
+
         self.metrics['mse'].update(pred, label)
         self.metrics['r2'].update(pred, label)
         self.preds.extend(list(pred.numpy()))
@@ -46,7 +50,7 @@ def model_evaluation(model: nn.Module, cfg: DictConfig, run_type: str, epoch: fl
     model.to(device)
     model.eval()
 
-    measurer = Measurer(max_value=cfg.dataloader.cot_max)
+    measurer = Measurer(normalized=cfg.dataloader.normalize_cot, max_value=cfg.dataloader.cot_max)
     dataset = datasets.Dataset(cfg, run_type, no_augmentations=True)
     dataloader_kwargs = {
         'batch_size': cfg.trainer.batch_size,

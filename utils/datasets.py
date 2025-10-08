@@ -44,6 +44,7 @@ class Dataset(AbstractDataset):
         self.input_keys = cfg.dataloader.inputs
         self.skip_band1 = cfg.dataloader.skip_band1
         self.skip_band10 = cfg.dataloader.skip_band10
+        self.normalize_cot = cfg.dataloader.normalize_cot
         self.threshold_thickness_is_thin_cloud = cfg.dataloader.threshold_thickness_is_thin_cloud
         self.threshold_thickness_is_cloud = cfg.dataloader.threshold_thickness_is_cloud
         self.uniform_dist_no_cloud_thin_cloud_reg_cloud = cfg.dataloader.uniform_dist_no_cloud_thin_cloud_reg_cloud
@@ -68,7 +69,8 @@ class Dataset(AbstractDataset):
 
         # TODO: Also move to get item
         # Normalize regressor data
-        self.gts /= self.cfg.dataloader.cot_max
+        if self.normalize_cot:
+            self.gts /= self.cfg.dataloader.cot_max
 
         # Create copies of original entities (some modifications, e.g. adding
         # noise, is done after each epoch, and the starting point per modification
@@ -106,8 +108,8 @@ class Dataset(AbstractDataset):
         x = self.inputs[index]
 
         # Add noise disturbances to data (if enabled)
-        white_noise = np.random.randn(x.shape[0]) * self.means_input * self.input_noise
-        x += white_noise
+        # white_noise = np.random.randn(x.shape[0]) * self.means_input * self.input_noise
+        # x += white_noise
         # TODO: means and stds should always come from the train dataset
         x = (x - self.means_input) / self.stds_input
 
@@ -116,7 +118,7 @@ class Dataset(AbstractDataset):
 
         item = {
             'x': torch.tensor(x).float(),
-            'y': torch.tensor(y).float(),
+            'y': torch.tensor([y]).float(),
             'y_binary': torch.tensor(y_binary).float(),
         }
 

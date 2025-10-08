@@ -42,10 +42,10 @@ def run_training(cfg: DictConfig):
     dataset = datasets.Dataset(cfg, run_type='train')
     print(dataset)
 
-    model = model_manager.build_model(cfg, dataset.input_dim, 1)
+    model = model_manager.build_model(cfg)
     model.to(device)
 
-    criterion = nn.MSELoss().to(device)
+    criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(
         model.parameters(),
         lr=cfg.trainer.lr,
@@ -73,7 +73,7 @@ def run_training(cfg: DictConfig):
     best_val_value = None
     trigger_times = 0
     stop_training = False
-    best_val_value = evaluation.model_evaluation(model, cfg, 'val', epoch_float, cfg.trainer.max_eval_samples)
+    # best_val_value = evaluation.model_evaluation(model, cfg, 'val', epoch_float, cfg.trainer.max_eval_samples)
 
     for epoch in range(1, epochs + 1):
         print(f'Starting epoch {epoch}/{epochs}.')
@@ -114,7 +114,7 @@ def run_training(cfg: DictConfig):
         _ = evaluation.model_evaluation(model, cfg, 'train', epoch_float, cfg.trainer.max_eval_samples)
         val_value = evaluation.model_evaluation(model, cfg, 'val', epoch_float, cfg.trainer.max_eval_samples)
 
-        print(f'val value {val_value:.3f} (best val value {best_val_value:.3f})')
+        print(f'val value {val_value:.3f} (best val value {best_val_value if best_val_value is not None else 0:.3f})')
         if best_val_value is not None and val_value >= best_val_value:
             trigger_times += 1
             if trigger_times >= cfg.trainer.patience:
