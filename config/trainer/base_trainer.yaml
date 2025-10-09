@@ -1,0 +1,8 @@
+lr: 3e-4
+batch_size: 32
+epochs: 250
+patience: 250
+optimizer: 'adam'
+weight_decay: 0
+beta1: 0.9
+max_eval_samples: 10_000
